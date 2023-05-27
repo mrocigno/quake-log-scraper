@@ -6,6 +6,16 @@ import br.com.mrocigno.model.Games
 import java.io.File
 import kotlin.system.exitProcess
 
+/***
+ * @author Matheus R.
+ *
+ * The entry point of application.
+ * The process will end with code 0 if it finishes the execution successfully and code 1 for errors
+ *
+ * @param args expected arguments:
+ *          --file (-f) <path/to/log.log>
+ *          --type (-t) <JSON/REPORT>
+ */
 fun main(args: Array<String>) {
     val argsHelper = ArgsValidationHelper(args)
 
@@ -27,18 +37,17 @@ fun main(args: Array<String>) {
     val file = argsHelper.file
 
     if (!file.exists()) {
-        println("Arquivo \"${file.name}\" não encontrado")
-        // Ending program with status 1 to indicate error
+        println("File \"${file.name}\" not found")
         exitProcess(1)
     }
 
-    println(file.scan().toJson())
+    println(argsHelper.type.transform(file.scan()))
 }
 
 fun File.scan(): Games {
     val gamesHelper = mutableListOf<GameScrapperHelper>()
 
-    // Read line by line and close on end of lambda
+    // Read line by line and close buffer on end of lambda
     bufferedReader().useLines {
         var creator: MutableList<String>? = null
 

@@ -5,14 +5,26 @@ import br.com.mrocigno.sortByValue
 import com.google.gson.annotations.SerializedName
 
 data class Games(
-    @SerializedName("total_games") val totalGames: Int,
-    @SerializedName("games") val games: List<Game>
+    @SerializedName("total") val total: Int,
+    @SerializedName("list") val list: List<Game>
 ) {
 
     constructor(games: List<GameScrapperHelper>) : this(
-        totalGames = games.size,
-        games = games.map(::Game)
+        total = games.size,
+        list = games.map(::Game)
     )
+
+    fun leaderboard(): Map<String, Int> {
+        val result = mutableMapOf<String, Int>()
+
+        list.forEach {
+            it.kills.forEach { (key, value) ->
+                result.merge(key, value) { old, new -> old + new }
+            }
+        }
+
+        return result.sortByValue()
+    }
 }
 
 data class Game(

@@ -1,21 +1,24 @@
 package br.com.mrocigno.helper
 
+import br.com.mrocigno.model.ReportType
 import java.io.File
 
-class ArgsValidationHelper(val args: Array<String>) {
+class ArgsValidationHelper(private val args: Array<String>) {
 
-    val validArgs: MutableMap<String, String> = mutableMapOf(
+    val file: File get() = args.getArg("-f", "--file")!!.run {
+        File(this)
+    }
+
+    val type: ReportType get() = args.getArg("-t", "--type")?.let(ReportType::get) ?: ReportType.JSON
+
+    private val validArgs: MutableMap<String, String> = mutableMapOf(
         "-h" to "",
         "--help" to "print help message\n",
         "-f" to "",
         "--file" to "path to file that should be read\n",
         "-t" to "",
-        "--type" to "indicate the print type [json | report]\n"
+        "--type" to "indicate the print type [json | report], the application uses json by default\n"
     )
-
-    val file: File get() = args.getArg("-f", "--file")!!.run {
-        File(this)
-    }
 
     fun hasInvalidArg(action: (invalidArg: String) -> Unit) {
         for (key in args.filter { it.startsWith("-") }) {
@@ -36,7 +39,7 @@ class ArgsValidationHelper(val args: Array<String>) {
         }
     }
 
-    fun Array<String>.getArg(key: String, variant: String): String? {
+    private fun Array<String>.getArg(key: String, variant: String): String? {
         indices.forEach { index ->
             if ((this[index] == key || this[index] == variant) && index + 1 < size) {
                 return this[index + 1]
