@@ -11,7 +11,6 @@ repositories {
 }
 
 dependencies {
-//    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     testImplementation(kotlin("test"))
 }
 
@@ -25,6 +24,6 @@ kotlin {
 
 tasks.jar {
     manifest {
-        attributes["Main-Class"] = "_mainKt"
+        attributes["Main-Class"] = "br.com.mrocigno._mainKt"
     }
 }
