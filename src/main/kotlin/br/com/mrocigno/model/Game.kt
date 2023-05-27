@@ -1,51 +1,31 @@
 package br.com.mrocigno.model
 
-import br.com.mrocigno.model.Clients.Companion.shouldCreateClient
-import br.com.mrocigno.model.Clients.Companion.shouldDisconnectClient
-import br.com.mrocigno.model.Clients.Companion.shouldUpdateClientName
-import br.com.mrocigno.model.Death.Companion.shouldComputeDeath
+import br.com.mrocigno.helper.GameScrapperHelper
+import br.com.mrocigno.sortByValue
+import com.google.gson.annotations.SerializedName
 
-class Game(logs: List<String>) {
+data class Games(
+    @SerializedName("total_games") val totalGames: Int,
+    @SerializedName("games") val games: List<Game>
+) {
 
-    val clients: Clients = Clients()
-    val meansOfDeath = hashMapOf<MeanOfDeath, Int>()
+    constructor(games: List<GameScrapperHelper>) : this(
+        totalGames = games.size,
+        games = games.map(::Game)
+    )
+}
 
-    init {
-        clients.use {
-            logs.forEach logLooper@ { log ->
+data class Game(
+    @SerializedName("total_kills") val totalKills: Int,
+    @SerializedName("players") val players: List<String>,
+    @SerializedName("kills") val kills: Map<String, Int>,
+    @SerializedName("kills_by_means") val killsByMeans: Map<MeanOfDeath, Int>
+) {
 
-                shouldCreateClient(log) { id ->
-                    clients.create(id)
-                    return@logLooper
-                }
-
-                shouldUpdateClientName(log) { id, name ->
-                    clients.update(id, name)
-                    return@logLooper
-                }
-
-                shouldDisconnectClient(log) { id, time ->
-                    clients.disconnect(id, time)
-                    return@logLooper
-                }
-
-                shouldComputeDeath(log) { killerId, deadId, meanOfDeath ->
-                    clients.computeDeath(killerId, deadId)
-                    meansOfDeath[meanOfDeath] = (meansOfDeath[meanOfDeath] ?: 0) + 1
-                    return@logLooper
-                }
-            }
-        }
-    }
-
-    companion object {
-
-        const val WORLD_KILLER_ID = 1022
-
-        private const val INIT_GAME_TAG = "InitGame"
-
-        // Get first 20 chars to make sure that's not a play named InitGame
-        fun isGameInitialization(logLine: String): Boolean =
-            logLine.substring(0, 20).contains(INIT_GAME_TAG)
-    }
+    constructor(helper: GameScrapperHelper) : this(
+        totalKills = helper.totalKill,
+        players = helper.clients.playersList,
+        kills = helper.clients.playerRank.sortByValue(),
+        killsByMeans = helper.meansOfDeath.sortByValue()
+    )
 }

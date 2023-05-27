@@ -1,44 +1,62 @@
 package br.com.mrocigno
 
-import br.com.mrocigno.model.Game
+import br.com.mrocigno.helper.ArgsValidationHelper
+import br.com.mrocigno.helper.GameScrapperHelper
+import br.com.mrocigno.model.Games
 import java.io.File
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
+    val argsHelper = ArgsValidationHelper(args)
 
-    val file = File("C:\\Users\\Matheus\\Documents\\projects\\quake-log-scrapper\\assets\\qgames.log")
+    argsHelper.hasInvalidArg {
+        println("Unrecognized option: $it")
+        println("Use --help (-h) to see all options")
+        exitProcess(1)
+    }
+
+    argsHelper.shouldShowHelp {
+        exitProcess(0)
+    }
+
+    argsHelper.hasFileArg {
+        println("--file (-f) argument is required")
+        exitProcess(1)
+    }
+
+    val file = argsHelper.file
 
     if (!file.exists()) {
-        println("O arquivo ${file.name} não encontrado")
+        println("Arquivo \"${file.name}\" não encontrado")
         // Ending program with status 1 to indicate error
         exitProcess(1)
     }
 
-    val games = mutableListOf<Game>()
+    println(file.scan().toJson())
+}
+
+fun File.scan(): Games {
+    val gamesHelper = mutableListOf<GameScrapperHelper>()
 
     // Read line by line and close on end of lambda
-    file.bufferedReader().useLines {
+    bufferedReader().useLines {
         var creator: MutableList<String>? = null
 
         it.forEach { line ->
 
             when {
-                Game.isGameInitialization(line) -> {
+                GameScrapperHelper.isGameInitialization(line) -> {
                     creator?.run {
-                        games.add(Game(this))
+                        gamesHelper.commit(this)
                     }
                     creator = mutableListOf()
                 }
                 else -> creator?.add(line)
             }
         }
+
+        if (!creator.isNullOrEmpty()) gamesHelper.commit(creator!!)
     }
 
-
-    println("Total games: ${games.size}")
-    games.forEachIndexed { index, game ->
-        println("===================")
-        println("Game number $index")
-        game.clients.print()
-    }
+    return Games(gamesHelper)
 }
