@@ -1,18 +1,16 @@
 plugins {
-    kotlin("jvm") version "1.8.0"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.shadowJar)
 }
 
 group = "br.com.mrocigno"
-version = "1.0-SNAPSHOT"
-
-repositories {
-    mavenCentral()
-}
+version = "1.0.0"
 
 dependencies {
+
     testImplementation(kotlin("test"))
-    implementation("com.google.code.gson:gson:2.10.1")
+
+    implementation(libs.gson)
 }
 
 tasks.test {

@@ -6,7 +6,9 @@ import br.com.mrocigno.toJson
 import javax.swing.GroupLayout.Alignment
 
 enum class ReportType(val transform: (Games) -> String) {
-    JSON({ games -> games.toJson().orEmpty() }),
+    JSON({ games ->
+        games.toJson().orEmpty()
+    }),
     REPORT({ games ->
         val builder = StringBuilder()
 
