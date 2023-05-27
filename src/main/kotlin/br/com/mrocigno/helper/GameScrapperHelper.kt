@@ -14,7 +14,7 @@ class GameScrapperHelper(logs: List<String>) {
 
     val clients: ClientScrapperHelper = ClientScrapperHelper()
     val meansOfDeath: MutableMap<MeanOfDeath, Int> = MeanOfDeath.values().associateWith { 0 }.toMutableMap()
-    val totalKill get() = meansOfDeath.entries.sumOf { (_, value) -> value }
+    val totalKill: Int get() = meansOfDeath.entries.sumOf { (_, value) -> value }
 
     init {
         logs.forEach logLooper@ { log ->
@@ -35,14 +35,14 @@ class GameScrapperHelper(logs: List<String>) {
 
     companion object {
 
-        const val WORLD_KILLER_ID = 1022
-        const val KILL_TAG = "Kill"
+        const val WORLD_KILLER_ID: Int = 1022
+        const val KILL_TAG: String = "Kill"
 
-        private const val INIT_GAME_TAG = "InitGame"
+        private const val INIT_GAME_TAG: String = "InitGame"
 
         // Get first 20 chars to make sure that's not a play named InitGame
         fun isGameInitialization(logLine: String): Boolean =
-            logLine.substring(0, 20).contains(INIT_GAME_TAG)
+            runCatching { logLine.substring(0, 20).contains(INIT_GAME_TAG) }.getOrElse { false }
 
         /***
          * Check if the current line is a Kill log
@@ -52,7 +52,8 @@ class GameScrapperHelper(logs: List<String>) {
          * @param action extracted data callback
          */
         inline fun shouldComputeDeath(log: String, action: (killerId: Int, deadId: Int, meanOfDeath: MeanOfDeath) -> Unit) {
-            if (!log.substring(0, 20).contains(KILL_TAG)) return
+            val shouldComputeDeath = runCatching { log.substring(0, 20).contains(KILL_TAG) }.getOrElse { false }
+            if (!shouldComputeDeath) return
 
             """$KILL_TAG: (\d+) (\d+) (\d+)"""
                 .toRegex()

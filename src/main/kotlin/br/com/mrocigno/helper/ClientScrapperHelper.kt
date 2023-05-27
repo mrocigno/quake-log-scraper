@@ -10,7 +10,8 @@ class ClientScrapperHelper {
     val playersList: List<String> get() = clients.map { it.name }
     val playerRank: Map<String, Int> get() = clients.associate { it.name to it.killCount }
 
-    private val clients: MutableList<Client> = mutableListOf()
+    private val currentPlayerId: HashMap<Int, Client> = hashMapOf()
+    private val clients: MutableSet<Client> = mutableSetOf()
 
     /***
      * Check if the client is already registered, if it is then update de id, if not then create new client
@@ -19,12 +20,11 @@ class ClientScrapperHelper {
      * @param name client name
      */
     fun update(id: Int, name: String) {
-        this[name]?.run {
-            this.id = id
-            return
-        }
+        val client = this[name] ?: Client(name)
+        currentPlayerId[id] = client
 
-        clients.add(Client(id, name))
+        // A Set collection does not allow duplicate elements
+        clients.add(client)
     }
 
     /***
@@ -35,15 +35,12 @@ class ClientScrapperHelper {
      * @param deadId client id that was killed
      */
     fun computeDeath(killerId: Int, deadId: Int) {
-        this[killerId]?.run { killCount++ }
-        this[deadId]?.run {
+        currentPlayerId[killerId]?.run { killCount++ }
+        currentPlayerId[deadId]?.run {
             deathCount++
             if (killerId == GameScrapperHelper.WORLD_KILLER_ID) killCount--
         }
     }
-
-    operator fun get(id: Int): Client? =
-        clients.firstOrNull { it.id == id }
 
     operator fun get(name: String): Client? =
         clients.firstOrNull { it.name == name }
@@ -51,7 +48,7 @@ class ClientScrapperHelper {
     companion object {
 
         // Must be public to use inside inline functions
-        const val CLIENT_INFO_TAG = "ClientUserinfoChanged"
+        const val CLIENT_INFO_TAG: String = "ClientUserinfoChanged"
 
         /***
          * Check if the current line is a ClientUserinfoChanged log
@@ -77,7 +74,6 @@ class ClientScrapperHelper {
 }
 
 class Client(
-    var id: Int,
     var name: String = "",
     var killCount: Int = 0,
     var deathCount: Int = 0
