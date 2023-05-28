@@ -8,7 +8,7 @@ import br.com.mrocigno.helper.AllowedTags.WORLD_KILLER_ID
 class ClientScrapperHelper {
 
     val playersList: List<String> get() = clients.map { it.name }
-    val playerRank: Map<String, Int> get() = clients.associate { it.name to it.killCount }
+    val playersRank: Map<String, Int> get() = clients.associate { it.name to it.killCount }
 
     private val currentPlayerId: HashMap<Int, Client> = hashMapOf()
     private val clients: MutableSet<Client> = mutableSetOf()
@@ -42,11 +42,11 @@ class ClientScrapperHelper {
         }
     }
 
-    operator fun get(name: String): Client? =
+    private operator fun get(name: String): Client? =
         clients.firstOrNull { it.name == name }
 }
 
-class Client(
+private class Client(
     var name: String = "",
     var killCount: Int = 0,
     var deathCount: Int = 0

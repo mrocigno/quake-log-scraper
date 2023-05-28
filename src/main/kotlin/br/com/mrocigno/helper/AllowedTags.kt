@@ -26,9 +26,7 @@ object AllowedTags {
      * @param log the current line
      */
     fun isTagAllowed(log: String): Boolean =
-        log.contains(CLIENT_INFO_TAG)
-                || log.contains(KILL_TAG)
-                || log.contains(INIT_GAME_TAG)
+        log.contains(CLIENT_INFO_TAG) || log.contains(KILL_TAG)
 
     /***
      * Check if the current line is a Kill log

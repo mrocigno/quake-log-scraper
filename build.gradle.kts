@@ -8,9 +8,12 @@ version = "1.0.0"
 
 dependencies {
 
-    testImplementation(kotlin("test"))
-
+    implementation(libs.koin)
     implementation(libs.gson)
+
+    testImplementation(kotlin("test"))
+    testImplementation(libs.mockk)
+    testImplementation(libs.koin)
 }
 
 tasks.test {
@@ -23,6 +26,11 @@ kotlin {
 
 tasks.jar {
     manifest {
-        attributes["Main-Class"] = "br.com.mrocigno._mainKt"
+        attributes["Main-Class"] = "br.com.mrocigno.MainClassKt"
     }
+}
+
+task("execute", JavaExec::class) {
+    mainClass.set("br.com.mrocigno.MainClassKt")
+    classpath = sourceSets["main"].runtimeClasspath
 }

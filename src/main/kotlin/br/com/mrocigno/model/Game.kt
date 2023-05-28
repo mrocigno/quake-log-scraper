@@ -36,8 +36,8 @@ data class Game(
 
     constructor(helper: GameScrapperHelper) : this(
         totalKills = helper.totalKill,
-        players = helper.clients.playersList,
-        kills = helper.clients.playerRank.sortByValue(),
+        players = helper.playersList,
+        kills = helper.playersRank.sortByValue(),
         killsByMeans = helper.meansOfDeath.sortByValue()
     )
 }

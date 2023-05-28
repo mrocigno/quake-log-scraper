@@ -3,7 +3,7 @@ package br.com.mrocigno.helper
 import br.com.mrocigno.model.ReportType
 import java.io.File
 
-class ArgsValidationHelper(private val args: Array<String>) {
+class ArgsValidationHelper(private vararg val args: String) {
 
     val file: File get() = args.getArg("-f", "--file")!!.run {
         File(this)
@@ -39,7 +39,7 @@ class ArgsValidationHelper(private val args: Array<String>) {
         }
     }
 
-    private fun Array<String>.getArg(key: String, variant: String): String? {
+    private fun Array<out String>.getArg(key: String, variant: String): String? {
         indices.forEach { index ->
             if ((this[index] == key || this[index] == variant) && index + 1 < size) {
                 return this[index + 1]

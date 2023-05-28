@@ -42,10 +42,4 @@ fun Any?.toJson(): String? {
  * Sort a map using the value as reference (descending)
  */
 fun <K> Map<K, Int>.sortByValue(): Map<K, Int> =
-    toList().sortByValue()
-
-/***
- * Sort a list of pair using the value as reference (descending)
- */
-fun <K> List<Pair<K, Int>>.sortByValue(): Map<K, Int> =
-    sortedByDescending { (_, value) -> value }.toMap()
+    toList().sortedByDescending { (_, value) -> value }.toMap()

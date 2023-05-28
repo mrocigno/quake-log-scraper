@@ -4,17 +4,22 @@ import br.com.mrocigno.helper.AllowedTags.shouldComputeDeath
 import br.com.mrocigno.helper.AllowedTags.shouldUpdateClientName
 import br.com.mrocigno.increment
 import br.com.mrocigno.model.MeanOfDeath
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
 /***
  * Create a game container, here will contain the info about one game
  *
  * @param logs list of strings read from log file
  */
-class GameScrapperHelper(logs: List<String>) {
+class GameScrapperHelper(logs: List<String>) : KoinComponent {
 
-    val clients: ClientScrapperHelper = ClientScrapperHelper()
     val meansOfDeath: MutableMap<MeanOfDeath, Int> = MeanOfDeath.values().associateWith { 0 }.toMutableMap()
     val totalKill: Int get() = meansOfDeath.entries.sumOf { (_, value) -> value }
+    val playersList: List<String> get() = clients.playersList
+    val playersRank: Map<String, Int> get() = clients.playersRank
+
+    private val clients: ClientScrapperHelper = get()
 
     init {
         logs.forEach logLooper@ { log ->
