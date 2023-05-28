@@ -7,9 +7,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-class GameScrapperHelperTest {
+class GameScraperHelperTest {
 
-    private lateinit var helper: GameScrapperHelper
+    private lateinit var helper: GameScraperHelper
     private val logs = listOf(
         "20:34 ClientUserinfoChanged: 2 n\\Isgalamido\\t\\0\\model\\xian/default\\hmodel\\xian",
         "20:37 ClientUserinfoChanged: 2 n\\Isgalamido\\t\\0\\model\\uriel/zael\\hmodel\\uriel/",
@@ -21,7 +21,7 @@ class GameScrapperHelperTest {
 
     @BeforeEach
     fun setUp() {
-        helper = GameScrapperHelper(logs)
+        helper = GameScraperHelper(logs)
     }
 
     @Test

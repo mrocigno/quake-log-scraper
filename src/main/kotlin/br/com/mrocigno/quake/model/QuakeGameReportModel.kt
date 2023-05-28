@@ -2,7 +2,7 @@ package br.com.mrocigno.quake.model
 
 import br.com.mrocigno.common.ReportModel
 import br.com.mrocigno.common.table
-import br.com.mrocigno.quake.helper.GameScrapperHelper
+import br.com.mrocigno.quake.helper.GameScraperHelper
 import br.com.mrocigno.sortByValue
 import br.com.mrocigno.toJson
 import com.google.gson.annotations.SerializedName
@@ -14,7 +14,7 @@ class QuakeGameReportModel(
     @SerializedName("list") val list: List<Game>
 ) : ReportModel {
 
-    constructor(games: List<GameScrapperHelper>) : this(
+    constructor(games: List<GameScraperHelper>) : this(
         total = games.size,
         list = games.map(::Game)
     )
@@ -128,7 +128,7 @@ data class Game(
     @SerializedName("kills_by_means") val killsByMeans: Map<MeanOfDeath, Int>
 ) {
 
-    constructor(helper: GameScrapperHelper) : this(
+    constructor(helper: GameScraperHelper) : this(
         totalKills = helper.totalKill,
         players = helper.playersList,
         kills = helper.playersRank.sortByValue(),

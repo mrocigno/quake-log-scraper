@@ -1,6 +1,6 @@
 package br.com.mrocigno
 
-import br.com.mrocigno.quake.helper.ClientScrapperHelper
+import br.com.mrocigno.quake.helper.ClientScraperHelper
 import br.com.mrocigno.quake.model.Constants
 import io.mockk.mockk
 import org.junit.jupiter.api.AfterEach
@@ -17,7 +17,7 @@ class _utilsKtTest {
     fun setUp() {
         startKoin {
             modules(module {
-                single<ClientScrapperHelper> { mockk() }
+                single<ClientScraperHelper> { mockk() }
             })
         }
     }

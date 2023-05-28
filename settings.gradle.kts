@@ -1,4 +1,4 @@
-rootProject.name = "quake-log-scrapper"
+rootProject.name = "quake-log-scraper"
 
 dependencyResolutionManagement {
     repositories {

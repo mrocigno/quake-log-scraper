@@ -5,7 +5,7 @@ import br.com.mrocigno.quake.model.Constants.WORLD_KILLER_ID
 /***
  * A helper class that concentrate the business logic of score points
  */
-class ClientScrapperHelper {
+class ClientScraperHelper {
 
     val playersList: List<String> get() = clients.map { it.name }
     val playersRank: Map<String, Int> get() = clients.associate { it.name to it.killCount }

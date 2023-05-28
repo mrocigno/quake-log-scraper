@@ -4,6 +4,7 @@ import com.adarshr.gradle.testlogger.theme.ThemeType.STANDARD_PARALLEL
 plugins {
     id("application")
     alias(libs.plugins.kotlin)
+    alias(libs.plugins.shadowJar)
     alias(libs.plugins.testLogger) apply true
 }
 

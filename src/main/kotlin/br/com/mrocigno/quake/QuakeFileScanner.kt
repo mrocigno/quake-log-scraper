@@ -2,7 +2,7 @@ package br.com.mrocigno.quake
 
 import br.com.mrocigno.common.FileScanner
 import br.com.mrocigno.common.ReportModel
-import br.com.mrocigno.quake.helper.GameScrapperHelper
+import br.com.mrocigno.quake.helper.GameScraperHelper
 import br.com.mrocigno.quake.model.Constants
 import br.com.mrocigno.quake.model.QuakeGameReportModel
 import org.jetbrains.annotations.TestOnly
@@ -10,7 +10,7 @@ import java.io.File
 
 class QuakeFileScanner : FileScanner {
 
-    private val gamesHelper = mutableListOf<GameScrapperHelper>()
+    private val gamesHelper = mutableListOf<GameScraperHelper>()
 
     override fun scan(file: File): ReportModel {
         // Read line by line and close buffer on end of lambda
@@ -48,12 +48,12 @@ class QuakeFileScanner : FileScanner {
         contains(Constants.CLIENT_INFO_TAG) || contains(Constants.KILL_TAG)
 
     /***
-     * Commit the log lines into a GameScrapperHelper
+     * Commit the log lines into a GameScraperHelper
      *
      * @param logs log lines from a specific game
      */
-    private fun MutableList<GameScrapperHelper>.commit(logs: List<String>) =
-        add(GameScrapperHelper(logs))
+    private fun MutableList<GameScraperHelper>.commit(logs: List<String>) =
+        add(GameScraperHelper(logs))
 
     @TestOnly
     fun exposedTransform(logs: Sequence<String>) = transform(logs)

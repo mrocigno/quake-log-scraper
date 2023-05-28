@@ -11,7 +11,7 @@ import org.koin.core.component.KoinComponent
  *
  * @param logs list of strings read from log file
  */
-class GameScrapperHelper(logs: List<String>) : KoinComponent {
+class GameScraperHelper(logs: List<String>) : KoinComponent {
 
     val meansOfDeath: MutableMap<MeanOfDeath, Int> = MeanOfDeath.values().associateWith { 0 }.toMutableMap()
     val totalKill: Int get() = meansOfDeath.entries.sumOf { (_, value) -> value }
@@ -19,7 +19,7 @@ class GameScrapperHelper(logs: List<String>) : KoinComponent {
     val playersRank: Map<String, Int> get() = clients.playersRank
 
     // here there is no need to be injected because they are dependent classes
-    private val clients: ClientScrapperHelper = ClientScrapperHelper()
+    private val clients: ClientScraperHelper = ClientScraperHelper()
 
     init {
          for (log in logs) {
