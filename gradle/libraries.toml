@@ -1,9 +1,9 @@
 [versions]
 kotlin = "1.8.0"
 gson = "2.10.1"
-shadowJar = "7.1.2"
 mockk = "1.13.5"
 koin = "3.4.0"
+testLogger = "3.2.0"
 
 [libraries]
 koin = { module = "io.insert-koin:koin-core", version.ref = "koin" }
@@ -12,4 +12,4 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-shadowJar = { id = "com.github.johnrengelman.shadow", version.ref = "shadowJar" }
+testLogger = { id = "com.adarshr.test-logger", version.ref = "testLogger" }

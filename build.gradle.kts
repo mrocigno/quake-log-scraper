@@ -1,10 +1,18 @@
+import com.adarshr.gradle.testlogger.theme.ThemeType.MOCHA
+import com.adarshr.gradle.testlogger.theme.ThemeType.STANDARD_PARALLEL
+
 plugins {
+    id("application")
     alias(libs.plugins.kotlin)
-    alias(libs.plugins.shadowJar)
+    alias(libs.plugins.testLogger) apply true
 }
 
 group = "br.com.mrocigno"
 version = "1.0.0"
+
+application {
+    mainClass.set("br.com.mrocigno.MainClassKt")
+}
 
 dependencies {
 
@@ -16,21 +24,17 @@ dependencies {
     testImplementation(libs.koin)
 }
 
+testlogger {
+    theme = MOCHA
+}
+
 tasks.test {
     useJUnitPlatform()
+    testlogger {
+        theme = STANDARD_PARALLEL
+    }
 }
 
 kotlin {
     jvmToolchain(11)
-}
-
-tasks.jar {
-    manifest {
-        attributes["Main-Class"] = "br.com.mrocigno.MainClassKt"
-    }
-}
-
-task("execute", JavaExec::class) {
-    mainClass.set("br.com.mrocigno.MainClassKt")
-    classpath = sourceSets["main"].runtimeClasspath
 }

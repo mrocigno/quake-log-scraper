@@ -3,12 +3,4 @@ LABEL authors="Matheus"
 
 COPY . /docker-building
 WORKDIR /docker-building
-RUN ./gradlew shadowJar
-
-FROM eclipse-temurin:11-jre
-
-COPY /assets/qgames.log /bin/qgames.log
-COPY --from=BUILD /docker-building/build/libs/quake-log-scrapper-1.0.0-all.jar /bin/scrapper.jar
-WORKDIR /bin
-
-ENTRYPOINT ["java", "-jar", "scrapper.jar"]
+RUN ./gradlew build
