@@ -1,8 +1,7 @@
 package br.com.mrocigno
 
-import br.com.mrocigno.helper.AllowedTags
-import br.com.mrocigno.helper.ClientScrapperHelper
-import br.com.mrocigno.helper.GameScrapperHelper
+import br.com.mrocigno.quake.helper.ClientScrapperHelper
+import br.com.mrocigno.quake.model.Constants
 import io.mockk.mockk
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -24,19 +23,10 @@ class _utilsKtTest {
     }
 
     @Test
-    fun `check if commit add new object to list`() {
-        val gamesHelper: MutableList<GameScrapperHelper> = mutableListOf()
-        val logs: List<String> = listOf("log1", "log2")
-
-        gamesHelper.commit(logs)
-        assertEquals(1, gamesHelper.size)
-    }
-
-    @Test
     fun `check if ids is correctly extracted from string`() {
         val log = "20:54 Kill: 1022 2 22: <world> killed Isgalamido by MOD_TRIGGER_HURT"
 
-        """${AllowedTags.KILL_TAG}: (\d+) (\d+) (\d+)"""
+        """${Constants.KILL_TAG}: (\d+) (\d+) (\d+)"""
             .toRegex()
             .find(log)!!
             .let {

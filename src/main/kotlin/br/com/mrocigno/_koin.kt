@@ -1,7 +1,8 @@
 package br.com.mrocigno
 
-import br.com.mrocigno.helper.ArgsValidationHelper
-import br.com.mrocigno.helper.ClientScrapperHelper
+import br.com.mrocigno.common.ArgsValidationHelper
+import br.com.mrocigno.common.FileScanner
+import br.com.mrocigno.quake.QuakeFileScanner
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
@@ -11,7 +12,7 @@ fun initKoin() {
         modules(
             module {
                 factory { (args: Array<String>) -> ArgsValidationHelper(*args) }
-                factory { ClientScrapperHelper() }
+                factory<FileScanner> { QuakeFileScanner() }
             }
         )
     }

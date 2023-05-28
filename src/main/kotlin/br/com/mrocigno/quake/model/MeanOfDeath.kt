@@ -1,4 +1,4 @@
-package br.com.mrocigno.model
+package br.com.mrocigno.quake.model
 
 // Using id val to make easier reorder if needed
 enum class MeanOfDeath(val id: Int) {

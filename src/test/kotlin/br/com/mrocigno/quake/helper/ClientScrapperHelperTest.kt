@@ -1,4 +1,4 @@
-package br.com.mrocigno.helper
+package br.com.mrocigno.quake.helper
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

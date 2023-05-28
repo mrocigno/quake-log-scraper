@@ -1,4 +1,4 @@
-package br.com.mrocigno.model
+package br.com.mrocigno.quake.model
 
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
