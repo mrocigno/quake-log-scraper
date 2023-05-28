@@ -1,19 +1,31 @@
-package br.com.mrocigno.model
+package br.com.mrocigno.quake.model
 
-import br.com.mrocigno.helper.table
+import br.com.mrocigno.common.ReportModel
+import br.com.mrocigno.common.table
+import br.com.mrocigno.quake.helper.GameScrapperHelper
 import br.com.mrocigno.sortByValue
 import br.com.mrocigno.toJson
-import javax.swing.GroupLayout.Alignment
+import com.google.gson.annotations.SerializedName
+import javax.swing.GroupLayout.Alignment.CENTER
+import javax.swing.GroupLayout.Alignment.TRAILING
 
-enum class ReportType(val transform: (Games) -> String) {
-    JSON({ games ->
-        games.toJson().orEmpty()
-    }),
-    REPORT({ games ->
+class QuakeGameReportModel(
+    @SerializedName("total") val total: Int,
+    @SerializedName("list") val list: List<Game>
+) : ReportModel {
+
+    constructor(games: List<GameScrapperHelper>) : this(
+        total = games.size,
+        list = games.map(::Game)
+    )
+
+    override fun asJson(): String = this.toJson().orEmpty()
+
+    override fun asReport(): String {
         val builder = StringBuilder()
 
-        builder.appendLine("result of ${games.total} game(s)")
-        builder.appendLine("total kills: ${games.list.sumOf { it.totalKills }}")
+        builder.appendLine("result of $total game(s)")
+        builder.appendLine("total kills: ${list.sumOf { it.totalKills }}")
         builder.appendLine()
         builder.appendLine(
             table {
@@ -22,7 +34,7 @@ enum class ReportType(val transform: (Games) -> String) {
                         cell(
                             content = "Leaderboard",
                             span = 3,
-                            alignment = Alignment.CENTER
+                            alignment = CENTER
                         )
                     }
                 }
@@ -32,19 +44,19 @@ enum class ReportType(val transform: (Games) -> String) {
                         cell("Player")
                         cell(
                             content = "Score",
-                            alignment = Alignment.CENTER
+                            alignment = CENTER
                         )
                     }
                 }
                 var position = 1
-                games.leaderboard().forEach { (key, value) ->
+                leaderboard().forEach { (key, value) ->
                     line {
                         cell(
                             content = (position++).toString(),
-                            alignment = Alignment.TRAILING
+                            alignment = TRAILING
                         )
                         cell(key)
-                        cell(value.toString(), alignment = Alignment.CENTER)
+                        cell(value.toString(), alignment = CENTER)
                     }
                 }
             }
@@ -53,7 +65,7 @@ enum class ReportType(val transform: (Games) -> String) {
         builder.appendLine("=========  score individual game =========")
         builder.appendLine()
 
-        games.list.forEachIndexed { index, game ->
+        list.forEachIndexed { index, game ->
             builder.appendLine(
                 table {
                     header {
@@ -61,7 +73,7 @@ enum class ReportType(val transform: (Games) -> String) {
                             cell(
                                 content = "Game number ${index + 1}",
                                 span = 3,
-                                alignment = Alignment.CENTER
+                                alignment = CENTER
                             )
                         }
                     }
@@ -71,7 +83,7 @@ enum class ReportType(val transform: (Games) -> String) {
                             cell("Player")
                             cell(
                                 content = "Score",
-                                alignment = Alignment.CENTER
+                                alignment = CENTER
                             )
                         }
                     }
@@ -80,12 +92,12 @@ enum class ReportType(val transform: (Games) -> String) {
                         line {
                             cell(
                                 content = (position++).toString(),
-                                alignment = Alignment.TRAILING
+                                alignment = TRAILING
                             )
                             cell(player)
                             cell(
                                 content = score.toString(),
-                                alignment = Alignment.CENTER
+                                alignment = CENTER
                             )
                         }
                     }
@@ -93,12 +105,33 @@ enum class ReportType(val transform: (Games) -> String) {
             )
         }
 
-        builder.toString()
-    });
-
-    companion object {
-
-        fun get(name: String): ReportType? =
-            ReportType.values().find { it.name.lowercase() == name.lowercase() }
+        return builder.toString()
     }
+
+    fun leaderboard(): Map<String, Int> {
+        val result = mutableMapOf<String, Int>()
+
+        list.forEach {
+            it.kills.forEach { (key, value) ->
+                result.merge(key, value) { old, new -> old + new }
+            }
+        }
+
+        return result.sortByValue()
+    }
+}
+
+data class Game(
+    @SerializedName("total_kills") val totalKills: Int,
+    @SerializedName("players") val players: List<String>,
+    @SerializedName("kills") val kills: Map<String, Int>,
+    @SerializedName("kills_by_means") val killsByMeans: Map<MeanOfDeath, Int>
+) {
+
+    constructor(helper: GameScrapperHelper) : this(
+        totalKills = helper.totalKill,
+        players = helper.playersList,
+        kills = helper.playersRank.sortByValue(),
+        killsByMeans = helper.meansOfDeath.sortByValue()
+    )
 }

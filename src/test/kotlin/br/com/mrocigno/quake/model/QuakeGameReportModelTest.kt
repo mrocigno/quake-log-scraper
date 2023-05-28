@@ -1,11 +1,11 @@
-package br.com.mrocigno.model
+package br.com.mrocigno.quake.model
 
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-class ReportTypeTest {
+class QuakeGameReportModelTest {
 
-    private val games = Games(
+    private val games = QuakeGameReportModel(
         total = 1,
         list = listOf(
             Game(
@@ -19,14 +19,24 @@ class ReportTypeTest {
                     MeanOfDeath.MOD_SHOTGUN to 3,
                     MeanOfDeath.MOD_CRUSH to 2
                 )
+            ),
+            Game(
+                totalKills = 6,
+                players = listOf("lola", "loki"),
+                kills = mapOf(
+                    "loki" to 5,
+                    "lola" to 1
+                ),
+                killsByMeans = mapOf(
+                    MeanOfDeath.MOD_SHOTGUN to 6
+                )
             )
         )
     )
 
     @Test
     fun `check json transformation`() {
-        val json = ReportType.JSON.transform(games)
-        assertEquals(json, """
+        assertEquals("""
             {
               "total": 1,
               "list": [
@@ -44,31 +54,43 @@ class ReportTypeTest {
                     "MOD_SHOTGUN": 3,
                     "MOD_CRUSH": 2
                   }
+                },
+                {
+                  "total_kills": 6,
+                  "players": [
+                    "lola",
+                    "loki"
+                  ],
+                  "kills": {
+                    "loki": 5,
+                    "lola": 1
+                  },
+                  "kills_by_means": {
+                    "MOD_SHOTGUN": 6
+                  }
                 }
               ]
             }
-        """.trimIndent())
+        """.trimIndent(), games.asJson())
     }
 
     @Test
     fun `check report transformation`() {
-        val report = ReportType.REPORT.transform(games)
-        println(report)
-        assertEquals(report, """
+        assertEquals("""
             result of 1 game(s)
-            total kills: 5
-            
+            total kills: 11
+
             |--------------------------|
             |       Leaderboard        |
             |-----|----------|---------|
             |     | Player   |  Score  |
             |-----|----------|---------|
-            |   1 | lola     |    3    |
-            |   2 | loki     |    2    |
+            |   1 | loki     |    7    |
+            |   2 | lola     |    4    |
             |--------------------------|
-            
+
             =========  score individual game =========
-            
+
             |--------------------------|
             |      Game number 1       |
             |-----|----------|---------|
@@ -77,8 +99,25 @@ class ReportTypeTest {
             |   1 | lola     |    3    |
             |   2 | loki     |    2    |
             |--------------------------|
-            
 
-        """.trimIndent())
+            |--------------------------|
+            |      Game number 2       |
+            |-----|----------|---------|
+            |     | Player   |  Score  |
+            |-----|----------|---------|
+            |   1 | loki     |    5    |
+            |   2 | lola     |    1    |
+            |--------------------------|
+
+
+        """.trimIndent(), games.asReport())
+    }
+
+    @Test
+    fun `check leaderboard sum`() {
+        assertEquals(mapOf(
+            "loki" to 7,
+            "lola" to 4
+        ), games.leaderboard())
     }
 }

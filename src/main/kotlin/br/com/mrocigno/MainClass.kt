@@ -1,13 +1,15 @@
 package br.com.mrocigno
 
-import br.com.mrocigno.helper.AllowedTags
-import br.com.mrocigno.helper.ArgsValidationHelper
-import br.com.mrocigno.helper.GameScrapperHelper
-import br.com.mrocigno.model.Games
+import br.com.mrocigno.common.ArgsValidationHelper
+import br.com.mrocigno.common.Cell
+import br.com.mrocigno.common.FileScanner
+import br.com.mrocigno.common.ReportType.JSON
+import br.com.mrocigno.common.ReportType.REPORT
+import br.com.mrocigno.common.table
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
-import java.io.File
+import javax.swing.GroupLayout.Alignment.CENTER
 import kotlin.system.exitProcess
 
 /***
@@ -23,14 +25,16 @@ import kotlin.system.exitProcess
 fun main(args: Array<String>) {
     initKoin()
 
-    MainClass(*args).print()
+    val report = MainClass(*args).process()
+    print(report)
 }
 
 class MainClass(private vararg val args: String) : KoinComponent {
 
     private val argsHelper: ArgsValidationHelper = get { parametersOf(args) }
+    private val fileScanner: FileScanner = get()
 
-    fun print() = apply {
+    fun process(): String {
         argsHelper.hasInvalidArg {
             println("Unrecognized option: $it")
             println("Use --help (-h) to see all options")
@@ -38,6 +42,25 @@ class MainClass(private vararg val args: String) : KoinComponent {
         }
 
         argsHelper.shouldShowHelp {
+            println(
+                table {
+                    header {
+                        line {
+                            cell("COMMANDS", 2, CENTER)
+                        }
+                    }
+
+                    it.forEach { (key, value) ->
+                        line {
+                            cell(key)
+                            cell(value)
+                        }
+                        if (key.contains("--")) {
+                            line { cells.add(Cell(isSeparator = true, span = 2)) }
+                        }
+                    }
+                }
+            )
             exitProcess(0)
         }
 
@@ -52,30 +75,10 @@ class MainClass(private vararg val args: String) : KoinComponent {
             exitProcess(1)
         }
 
-        print(argsHelper.type.transform.invoke(file.scan()))
-    }
-
-    private fun File.scan(): Games {
-        val gamesHelper = mutableListOf<GameScrapperHelper>()
-
-        // Read line by line and close buffer on end of lambda
-        bufferedReader().useLines {
-            var creator: MutableList<String>? = null
-
-            it.forEach { line ->
-
-                when {
-                    AllowedTags.isTagAllowed(line) -> creator?.add(line)
-                    AllowedTags.isGameInitialization(line) -> {
-                        creator?.run(gamesHelper::commit)
-                        creator = mutableListOf()
-                    }
-                }
-            }
-
-            if (!creator.isNullOrEmpty()) gamesHelper.commit(creator!!)
+        val report = fileScanner.scan(file)
+        return when (argsHelper.type) {
+            JSON -> report.asJson()
+            REPORT -> report.asReport()
         }
-
-        return Games(gamesHelper)
     }
 }

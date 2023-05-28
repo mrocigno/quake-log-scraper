@@ -1,4 +1,4 @@
-package br.com.mrocigno.helper
+package br.com.mrocigno.common
 
 import javax.swing.GroupLayout.Alignment
 import kotlin.math.max
@@ -9,7 +9,7 @@ annotation class TableMarker
 /***
  * Start a table constructor helper
  *
- * @sample br.com.mrocigno.model.ReportType
+ * @sample br.com.mrocigno.quake.model.QuakeGameReportModel
  */
 @TableMarker
 fun table(action: TableHelper.() -> Unit): String {
@@ -45,8 +45,8 @@ class TableHelper {
         val columnsSize = IntArray(lines.maxBy { it.columnCount }.columnCount)
         lines.forEach {
             var column = 0
-            it.cells.forEach cellLooper@ { cell ->
-                if (cell.span > 1) return@cellLooper
+            it.cells.forEach cellLoop@ { cell ->
+                if (cell.span > 1) return@cellLoop
                 repeat(cell.span) {
                     columnsSize[column] = max(columnsSize[column], cell.size + 2)
                     column++

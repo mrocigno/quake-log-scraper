@@ -1,6 +1,5 @@
-package br.com.mrocigno.helper
+package br.com.mrocigno.common
 
-import br.com.mrocigno.model.ReportType
 import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockk
@@ -64,15 +63,15 @@ class ArgsValidationHelperTest {
     @Test
     fun `check if has help arg, if have, should run callback`() {
         val helperInvalid = ArgsValidationHelper()
-        val callbackInvalid: () -> Unit = mockk()
-        every { callbackInvalid.invoke() } answers { }
+        val callbackInvalid: (Map<String, String>) -> Unit = mockk()
+        every { callbackInvalid.invoke(any()) } answers { }
         helperInvalid.shouldShowHelp(callbackInvalid)
         verify { callbackInvalid wasNot Called }
 
         val helperValid = ArgsValidationHelper("-h")
-        val callbackValid: () -> Unit = mockk()
-        every { callbackValid.invoke() } answers { }
+        val callbackValid: (Map<String, String>) -> Unit = mockk()
+        every { callbackValid.invoke(any()) } answers { }
         helperValid.shouldShowHelp(callbackValid)
-        verify { callbackValid.invoke() }
+        verify { callbackValid.invoke(any()) }
     }
 }

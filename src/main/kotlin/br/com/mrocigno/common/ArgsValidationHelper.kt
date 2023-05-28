@@ -1,6 +1,5 @@
-package br.com.mrocigno.helper
+package br.com.mrocigno.common
 
-import br.com.mrocigno.model.ReportType
 import java.io.File
 
 class ArgsValidationHelper(private vararg val args: String) {
@@ -13,11 +12,11 @@ class ArgsValidationHelper(private vararg val args: String) {
 
     private val validArgs: MutableMap<String, String> = mutableMapOf(
         "-h" to "",
-        "--help" to "print help message\n",
+        "--help" to "print help message",
         "-f" to "",
-        "--file" to "path to file that should be read\n",
+        "--file" to "path to file that should be read",
         "-t" to "",
-        "--type" to "indicate the print type [json | report], the application uses json by default\n"
+        "--type" to "indicate the print type [json | report], the application uses json by default"
     )
 
     fun hasInvalidArg(action: (invalidArg: String) -> Unit) {
@@ -30,12 +29,9 @@ class ArgsValidationHelper(private vararg val args: String) {
         args.getArg("-f", "--file") ?: action.invoke()
     }
 
-    fun shouldShowHelp(action: () -> Unit) {
+    fun shouldShowHelp(action: (validArgs: Map<String, String>) -> Unit) {
         if (args.contains("-h") || args.contains("--help")) {
-            validArgs.toList().forEach { (key, value) ->
-                println("$key\t\t\t$value")
-            }
-            action.invoke()
+            action.invoke(validArgs)
         }
     }
 

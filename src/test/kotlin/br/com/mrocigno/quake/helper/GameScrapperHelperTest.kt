@@ -1,11 +1,11 @@
-package br.com.mrocigno.helper
+package br.com.mrocigno.quake.helper
 
-import io.mockk.mockk
-import org.junit.jupiter.api.AfterEach
+import br.com.mrocigno.quake.model.MeanOfDeath
+import br.com.mrocigno.quake.model.MeanOfDeath.MOD_ROCKET_SPLASH
+import br.com.mrocigno.quake.model.MeanOfDeath.MOD_TRIGGER_HURT
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.koin.core.context.startKoin
-import org.koin.dsl.module
+import kotlin.test.assertEquals
 
 class GameScrapperHelperTest {
 
@@ -21,29 +21,20 @@ class GameScrapperHelperTest {
 
     @BeforeEach
     fun setUp() {
-        startKoin {
-            modules(module {
-                single<ClientScrapperHelper> { mockk() }
-            })
-        }
         helper = GameScrapperHelper(logs)
     }
 
     @Test
-    fun teste1() {
-
-    }
-
-    @Test
     fun getMeansOfDeath() {
+        val expected = MeanOfDeath.values().associateWith { 0 }.toMutableMap()
+        expected[MOD_TRIGGER_HURT] = 2
+        expected[MOD_ROCKET_SPLASH] = 1
 
+        assertEquals(expected, helper.meansOfDeath)
     }
 
     @Test
     fun getTotalKill() {
-    }
-
-    @AfterEach
-    fun tearDown() {
+        assertEquals(3, helper.totalKill)
     }
 }

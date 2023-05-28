@@ -1,6 +1,6 @@
-package br.com.mrocigno.helper
+package br.com.mrocigno.quake.helper
 
-import br.com.mrocigno.helper.AllowedTags.WORLD_KILLER_ID
+import br.com.mrocigno.quake.model.Constants.WORLD_KILLER_ID
 
 /***
  * A helper class that concentrate the business logic of score points

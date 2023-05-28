@@ -1,15 +1,6 @@
 package br.com.mrocigno
 
-import br.com.mrocigno.helper.GameScrapperHelper
 import com.google.gson.GsonBuilder
-
-/***
- * Commit the log lines into a GameScrapperHelper
- *
- * @param logs log lines from a specific game
- */
-fun MutableList<GameScrapperHelper>.commit(logs: List<String>) =
-    add(GameScrapperHelper(logs))
 
 /***
  * Extract the id with -1 as default value
