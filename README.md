@@ -9,7 +9,7 @@ To build an image, run the following command in the project's root folder:
 ```bash
 docker build -t scraper .
 ```
-> **Warning**
+> **Note**<br>
 > If you receive an error indicating that the docker command was not recognized, it may mean that Docker is not installed 
 > yet (make sure to restart the machine after installing Docker).
 
