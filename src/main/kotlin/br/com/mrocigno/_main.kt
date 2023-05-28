@@ -1,5 +1,7 @@
 package br.com.mrocigno
 
+import br.com.mrocigno.helper.AllowedTags.isGameInitialization
+import br.com.mrocigno.helper.AllowedTags.isTagAllowed
 import br.com.mrocigno.helper.ArgsValidationHelper
 import br.com.mrocigno.helper.GameScrapperHelper
 import br.com.mrocigno.model.Games
@@ -54,13 +56,11 @@ fun File.scan(): Games {
         it.forEach { line ->
 
             when {
-                GameScrapperHelper.isGameInitialization(line) -> {
-                    creator?.run {
-                        gamesHelper.commit(this)
-                    }
+                isGameInitialization(line) -> {
+                    creator?.run(gamesHelper::commit)
                     creator = mutableListOf()
                 }
-                else -> creator?.add(line)
+                isTagAllowed(line) -> creator?.add(line)
             }
         }
 

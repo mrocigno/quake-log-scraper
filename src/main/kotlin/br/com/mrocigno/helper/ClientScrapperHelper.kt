@@ -1,6 +1,6 @@
 package br.com.mrocigno.helper
 
-import br.com.mrocigno.extractId
+import br.com.mrocigno.helper.AllowedTags.WORLD_KILLER_ID
 
 /***
  * A helper class that concentrate the business logic of score points
@@ -38,39 +38,12 @@ class ClientScrapperHelper {
         currentPlayerId[killerId]?.run { killCount++ }
         currentPlayerId[deadId]?.run {
             deathCount++
-            if (killerId == GameScrapperHelper.WORLD_KILLER_ID) killCount--
+            if (killerId == WORLD_KILLER_ID) killCount--
         }
     }
 
     operator fun get(name: String): Client? =
         clients.firstOrNull { it.name == name }
-
-    companion object {
-
-        // Must be public to use inside inline functions
-        const val CLIENT_INFO_TAG: String = "ClientUserinfoChanged"
-
-        /***
-         * Check if the current line is a ClientUserinfoChanged log
-         * if the current line actually is a ClientUserinfoChanged log, will run the callback with extracted data
-         *
-         * @param log the current line
-         * @param action extracted data callback
-         */
-        inline fun shouldUpdateClientName(log: String, action: (id: Int, name: String) -> Unit) {
-            if (!log.contains(CLIENT_INFO_TAG)) return
-
-            """$CLIENT_INFO_TAG:\s(\d+)\sn\\(.+?)[!\t\\]"""
-                .toRegex()
-                .find(log)
-                ?.let {
-                    val id = it.extractId(1)
-                    val name = it.groupValues[2]
-
-                    action.invoke(id, name)
-                }
-        }
-    }
 }
 
 class Client(
