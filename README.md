@@ -13,15 +13,14 @@ docker build -t scraper .
 > If you receive an error indicating that the docker command was not recognized, it may mean that Docker is not installed 
 > yet (make sure to restart the machine after installing Docker).
 
-Once the image is created, let's create a volume to be able to share files from the host computer to the container:
-```bash
-docker run -v ./assets:/scraper/assets scraper
-```
-
-With the image and volume properly configured, simply access the container and run the application!
+With the image properly configured, simply access the container and run the application!
 ```bash
 # To access the container's terminal
-docker run -it scrapper
+# On Windows you must invert the slash 
+docker run -it -v .\assets:/scraper/assets scraper
+
+# On Unix based operational system
+docker run -it -v ./assets:/scraper/assets scraper
 
 # Once inside the container's terminal, execute
 scraper -f assets/qgames.log
